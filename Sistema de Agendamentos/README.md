@@ -1,140 +1,141 @@
-# 📅 Sistema de Agendamento de Serviços
+# 💰 App de Controle de Finanças Pessoais
 
-Projeto FullStack com **Java Spring Boot (backend)**, **React Native (frontend mobile)** e **PostgreSQL (banco de dados)**.
-
-Este aplicativo permite que usuários agendem serviços com profissionais em horários disponíveis, com autenticação segura, gerenciamento de horários e histórico de agendamentos.
+Aplicativo fullstack para ajudar usuários a controlar suas receitas e despesas mensais, visualizar gráficos e receber alertas de orçamento.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-### 📦 Backend
+### 🔙 Backend
 - Java 17
 - Spring Boot
 - Spring Security + JWT
 - Spring Data JPA
 - PostgreSQL
-- Swagger (Documentação da API)
 
 ### 📱 Frontend
 - React Native (com Expo)
 - React Navigation
-- Axios (requisições HTTP)
-- AsyncStorage (armazenamento local de token)
-
-### 🗄️ Banco de Dados
-- MySQL
+- Axios
+- Victory Native (para gráficos)
+- AsyncStorage
 
 ---
 
-## 📐 Estrutura do Projeto
+## 🧩 Funcionalidades
 
-```
+- ✅ Cadastro e login de usuário
+- ➕ Registro de receitas e despesas
+- 📂 Categorias personalizadas (Alimentação, Lazer, Transporte etc.)
+- 📊 Gráficos mensais de gastos
+- ⚠️ Alerta de orçamento estourado (meta mensal)
 
-/backend        -> Projeto Spring Boot (Java)
-/app            -> Aplicativo mobile em React Native
-/database       -> Scripts SQL ou configurações do banco
+---
 
+## 📐 Estrutura do Banco de Dados
+
+```sql
+usuarios (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100),
+  email VARCHAR(150) UNIQUE,
+  senha VARCHAR(255)
+)
+
+categorias (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100),
+  tipo VARCHAR(10), -- 'RECEITA' ou 'DESPESA'
+  id_usuario INTEGER REFERENCES usuarios(id)
+)
+
+transacoes (
+  id SERIAL PRIMARY KEY,
+  valor DECIMAL(10,2),
+  descricao TEXT,
+  data DATE,
+  tipo VARCHAR(10), -- 'RECEITA' ou 'DESPESA'
+  id_categoria INTEGER REFERENCES categorias(id),
+  id_usuario INTEGER REFERENCES usuarios(id)
+)
+
+metas (
+  id SERIAL PRIMARY KEY,
+  valor_mensal DECIMAL(10,2),
+  mes INTEGER,
+  ano INTEGER,
+  id_usuario INTEGER REFERENCES usuarios(id)
+)
 ````
 
 ---
 
-## 🚀 Funcionalidades
+## 🔌 Principais Rotas da API
 
-### 👤 Autenticação
-- Cadastro e login de usuários (JWT)
-- Tipos de usuário: Cliente ou Profissional
-
-### 📋 Serviços
-- Listagem de serviços cadastrados
-- Visualização de detalhes
-
-### 📆 Agendamentos
-- Cliente agenda um horário com profissional
-- Profissional define horários disponíveis
-- Cancelamento e histórico de agendamentos
+| Método | Rota             | Descrição                    |
+| ------ | ---------------- | ---------------------------- |
+| POST   | `/auth/register` | Cadastro de usuário          |
+| POST   | `/auth/login`    | Login e geração do token JWT |
+| GET    | `/transacoes`    | Listar transações do mês     |
+| POST   | `/transacoes`    | Criar nova transação         |
+| GET    | `/categorias`    | Listar categorias            |
+| POST   | `/categorias`    | Criar nova categoria         |
+| GET    | `/metas`         | Buscar meta atual            |
+| POST   | `/metas`         | Criar/atualizar meta do mês  |
 
 ---
 
-## ⚙️ Como Executar o Projeto
+## 📱 Sugestões de Telas no App
 
-### 🔙 Backend
+1. **Tela de Login / Registro**
+2. **Dashboard**
 
-1. Acesse a pasta `backend`:
-   ```bash
-   cd backend
-  ```
+   * Gráfico de gastos vs receitas
+   * Total do mês
+   * Meta do mês
+3. **Lista de Transações**
 
-2. Configure o `application.properties`:
+   * Filtro por data e tipo
+4. **Adicionar Transação**
 
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/agendamentos
-   spring.datasource.username=seu_usuario
-   spring.datasource.password=sua_senha
-   ```
+   * Campo de valor, descrição, data, categoria
+5. **Categorias**
 
-3. Rode a aplicação:
-
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-4. Acesse a API em: `http://localhost:8080`
-
-5. Swagger (documentação): `http://localhost:8080/swagger-ui.html`
+   * Criar e listar
+6. **Configurar Meta Mensal**
 
 ---
 
-### 📱 Frontend
+## 🚀 Como Executar
 
-1. Acesse a pasta `app`:
+**Backend**
 
-   ```bash
-   cd app
-   ```
-
-2. Instale as dependências:
-
-   ```bash
-   npm install
-   ```
-
-3. Inicie com Expo:
-
-   ```bash
-   npx expo start
-   ```
-
-4. Escaneie o QR code com o app Expo Go para rodar no celular (ou use emulador)
-
----
-
-## 🗃️ Banco de Dados
-
-Modelo inicial:
-
-```
-usuarios (id, nome, email, senha, tipo)
-servicos (id, nome, descricao, duracao, preco)
-disponibilidade (id, id_user, data, hora_inicio, hora_fim)
-horarios (id, id_user, id_service, data, hora, status)
+```bash
+cd backend
+./mvnw spring-boot:run
 ```
 
----
+**Frontend**
 
-## ✅ Status do Projeto
-
-* [x] Estrutura inicial backend com Spring Boot
-* [x] Autenticação com JWT
-* [x] CRUD de usuários e serviços
-* [x] Agendamento de horários
-* [x] Integração com frontend
+```bash
+cd app
+npm install
+npx expo start
+```
 
 ---
 
 ## ✍️ Autor
 
-João Gabriel
-Estudante de Análise e Desenvolvimento de Sistemas – FIAP
-GitHub: [github.com/thejaobiell](https://github.com/thejaobiell)
-LinkedIn: [www.linkedin.com/in/joao-gabriel-b-93b67b323](www.linkedin.com/in/joao-gabriel-b-93b67b323)
+João Gabriel – Estudante de ADS (FIAP)
+
+```
+
+---
+
+Se quiser, posso agora:
+- gerar o **esqueleto do projeto Spring Boot** com classes `User`, `Categoria`, `Transacao`
+- ou criar as **telas base em React Native com navegação**
+
+Qual parte você quer montar primeiro? Backend, app ou banco?
+```
